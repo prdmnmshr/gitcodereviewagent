@@ -9,6 +9,9 @@
   "author": "Pradyuman",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.20.0",
+    "dotenv": "^17.4.2",
+    "env": "^0.0.2",
     "express": "^5.2.1"
   }
 }

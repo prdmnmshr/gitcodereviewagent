@@ -1,4 +1,5 @@
 //const webhookModel = require('../models/webhookModel');
+const axios = require("axios");
 const getAllWebhooks = async () => {
   try {
     // const webhooks = await webhookModel.getAllWebhooks();
@@ -11,8 +12,28 @@ const getAllWebhooks = async () => {
 };
 const handleWebhook = async (payload) => {
   try {
-    console.log('payload----------',payload);
-    return true;
+    
+    const repoFullName = payload.repository.full_name;
+    const commitSha = payload.head_commit.id;
+    const response = await axios.get(
+        `https://api.github.com/repos/${repoFullName}/commits/${commitSha}`,
+        {
+
+            headers: {
+
+                Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+
+                Accept: "application/vnd.github+json",
+
+            },
+
+        }
+
+    );
+
+    console.log("Changed files:", response.data.files);
+
+    return response.data.files;
   } catch (error) {
     console.error('Error handling webhook:', error);
     throw error;

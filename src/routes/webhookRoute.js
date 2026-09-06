@@ -6,6 +6,6 @@ const webhookController = require('../controllers/webhookcontrollers');
 
 router.get('/', webhookController.getAllWebhooks);
 
-router.post('/', webhookController.handleWebhook);
+router.post('/handle', webhookController.handleWebhook);
 
 module.exports = router;

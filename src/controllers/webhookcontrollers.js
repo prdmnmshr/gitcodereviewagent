@@ -18,11 +18,13 @@ const getAllWebhooks = async (req, res) => {
 
 const handleWebhook = async (req, res) => {
   try {
+    console.log('handleWebhook---- controller--');
     const result = await webhookService.handleWebhook(req.body);
 
     res.status(200).json({
       success: true,
-      data: result
+      data: result,
+      message:"webhook received"
     });
   } catch (error) {
     res.status(500).json({

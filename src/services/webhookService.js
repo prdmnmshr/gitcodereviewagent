@@ -11,10 +11,8 @@ const getAllWebhooks = async () => {
 };
 const handleWebhook = async (payload) => {
   try {
-    // Business logic goes here
-    // const webhook = await webhookModel.createWebhook(payload);
-    // return webhook;
-    console.log('handleWebhook-------------------------------');
+    console.log('payload----------');
+    return true;
   } catch (error) {
     console.error('Error handling webhook:', error);
     throw error;

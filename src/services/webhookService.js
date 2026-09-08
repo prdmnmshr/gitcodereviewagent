@@ -12,7 +12,7 @@ const getAllWebhooks = async () => {
 };
 const handleWebhook = async (payload) => {
   try {
-    
+    console.log('payload-----------------',payload)
     const repoFullName = payload.repository.full_name;
     const commitSha = payload.head_commit.id;
     const response = await axios.get(

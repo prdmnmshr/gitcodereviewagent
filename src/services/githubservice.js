@@ -10,14 +10,51 @@ const getAllWebhooks = async () => {
   }
 };
 
+const getFileContent = async (repoFullName, filePath) => {
+  try {
+    const response = await axios.get(
+      `https://api.github.com/repos/${repoFullName}/contents/${filePath}`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+        }
+      }
+    );
+
+    const content = Buffer.from(
+      response.data.content,
+      'base64'
+    ).toString('utf-8');
+
+    return content;
+
+  } catch (error) {
+    console.error(
+      'Error fetching file content:',
+      error.response?.data || error.message
+    );
+
+    throw error;
+  }
+};
+
 const handleWebhook = async (payload) => {
   try {
-    // Business logic goes here
+    const repoFullName = payload.repository.full_name;
 
-    //const webhook = await webhookModel.createWebhook(payload);
+    const files = payload.head_commit?.modified || [];
 
-    //return webhook;
-    console.log('handleWebhook----------');
+    for (const filePath of files) {
+      const content = await getFileContent(
+        repoFullName,
+        filePath
+      );
+
+      console.log('File:', filePath);
+      console.log('Content:', content);
+    }
+
   } catch (error) {
     console.error('Error handling webhook:', error);
     throw error;
@@ -26,5 +63,6 @@ const handleWebhook = async (payload) => {
 
 module.exports = {
   getAllWebhooks,
-  handleWebhook
+  handleWebhook,
+  getFileContent
 };

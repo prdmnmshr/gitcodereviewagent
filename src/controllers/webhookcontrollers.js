@@ -1,54 +1,37 @@
+const githubService = require('../services/githubService');
 const webhookService = require('../services/webhookService');
 
-const getAllWebhooks = async (req, res) => {
-  try {
-    const webhooks = await webhookService.getAllWebhooks();
+const handleWebhook = async (req, res) => {
+  const signature = req.headers['x-hub-signature-256'];
 
-    res.status(200).json({
-      success: true,
-      data: webhooks
-    });
-  } catch (error) {
-    res.status(500).json({
+  if (!githubService.isSignatureValid(req.rawBody, signature)) {
+    return res.status(401).json({
       success: false,
-      message: error.message
+      message: 'Invalid webhook signature'
     });
+  }
+
+
+  const event = req.headers['x-github-event'];
+
+  // Ack immediately so GitHub doesn't time out; review runs in the background.
+  res.status(202).json({
+    success: true,
+    message: 'Webhook received, review in progress'
+  });
+
+  if (event !== 'push') {
+    console.log(`Ignoring unsupported event: ${event}`);
+    return;
+  }
+
+  try {
+    await webhookService.handlePushEvent(req.body);
+  } catch (error) {
+    console.error('Webhook processing error:', error.message);
   }
 };
 
-const handleWebhook = async (req, res) => {
-
-    try {
-
-        console.log("Webhook Payload:", req.body);
-
-        const files = await await webhookService.handleWebhook(req.body);
-        return res.status(200).json({
-            success: true,
-
-            message: "Webhook processed successfully",
-
-            files
-
-        });
-
-    } catch (error) {
-
-        console.error("Webhook Error:", error.message);
-
-        return res.status(500).json({
-
-            success: false,
-
-            message: error.message
-
-        });
-
-    }
-
-};
-
 module.exports = {
-  getAllWebhooks,
   handleWebhook
 };

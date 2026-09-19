@@ -4,14 +4,17 @@
   "description": "review git pr",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pradyuman",
   "license": "ISC",
   "dependencies": {
+    "@ngrok/ngrok": "^1.7.0",
     "axios": "^1.20.0",
     "dotenv": "^17.4.2",
-    "env": "^0.0.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "openai": "^7.20.0"
   }
 }

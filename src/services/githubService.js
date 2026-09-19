@@ -32,6 +32,7 @@ const getCommitFiles = async (repoFullName, commitSha) => {
   const { data } = await githubApi.get(
     `/repos/${repoFullName}/commits/${commitSha}`
   );
+  console.log('Retrieved commit files:', data.files);
   return data.files || [];
 };
 
